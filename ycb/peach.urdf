@@ -1,7 +1,7 @@
 <robot name="peach">
     <link name="base_link">
         <visual>
-            <origin xyz="0.015047325763457797 -0.006783997168206114 -0.028259603076768534" rpy="0.0 0.0 0.0" />
+            <origin xyz="0.0 -0.0 0.0" rpy="0.0 0.0 0.0" />
             <geometry>
                 <mesh filename="peach/textured.obj" scale="1 1 1" />
             </geometry>
@@ -10,27 +10,33 @@
             </material>
         </visual>
         <collision>
-            <origin xyz="0.015047325763457797 -0.006783997168206114 -0.028259603076768534" rpy="0.0 0.0 0.0" />
+            <origin xyz="0.0 -0.0 0.0" rpy="0.0 0.0 0.0" />
             <geometry>
                 <mesh filename="peach/textured_coacd_0.stl" scale="1 1 1" />
             </geometry>
         </collision>
         <collision>
-            <origin xyz="0.015047325763457797 -0.006783997168206114 -0.028259603076768534" rpy="0.0 0.0 0.0" />
+            <origin xyz="0.0 -0.0 0.0" rpy="0.0 0.0 0.0" />
             <geometry>
                 <mesh filename="peach/textured_coacd_1.stl" scale="1 1 1" />
             </geometry>
         </collision>
         <collision>
-            <origin xyz="0.015047325763457797 -0.006783997168206114 -0.028259603076768534" rpy="0.0 0.0 0.0" />
+            <origin xyz="0.0 -0.0 0.0" rpy="0.0 0.0 0.0" />
             <geometry>
                 <mesh filename="peach/textured_coacd_2.stl" scale="1 1 1" />
             </geometry>
         </collision>
         <collision>
-            <origin xyz="0.015047325763457797 -0.006783997168206114 -0.028259603076768534" rpy="0.0 0.0 0.0" />
+            <origin xyz="0.0 -0.0 0.0" rpy="0.0 0.0 0.0" />
             <geometry>
                 <mesh filename="peach/textured_coacd_3.stl" scale="1 1 1" />
+            </geometry>
+        </collision>
+        <collision>
+            <origin xyz="0.0 -0.0 0.0" rpy="0.0 0.0 0.0" />
+            <geometry>
+                <mesh filename="peach/textured_coacd_4.stl" scale="1 1 1" />
             </geometry>
         </collision>
         <inertial>

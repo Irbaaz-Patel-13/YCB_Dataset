@@ -1,7 +1,7 @@
 <robot name="orange">
     <link name="base_link">
         <visual>
-            <origin xyz="0.007142269033564903 0.018368262802614648 -0.03363364365090191" rpy="0.0 0.0 0.0" />
+            <origin xyz="-0.0 0.0 -0.0" rpy="0.0 0.0 0.0" />
             <geometry>
                 <mesh filename="orange/textured.obj" scale="1 1 1" />
             </geometry>
@@ -10,15 +10,21 @@
             </material>
         </visual>
         <collision>
-            <origin xyz="0.007142269033564903 0.018368262802614648 -0.03363364365090191" rpy="0.0 0.0 0.0" />
+            <origin xyz="-0.0 0.0 -0.0" rpy="0.0 0.0 0.0" />
             <geometry>
                 <mesh filename="orange/textured_coacd_0.stl" scale="1 1 1" />
             </geometry>
         </collision>
         <collision>
-            <origin xyz="0.007142269033564903 0.018368262802614648 -0.03363364365090191" rpy="0.0 0.0 0.0" />
+            <origin xyz="-0.0 0.0 -0.0" rpy="0.0 0.0 0.0" />
             <geometry>
                 <mesh filename="orange/textured_coacd_1.stl" scale="1 1 1" />
+            </geometry>
+        </collision>
+        <collision>
+            <origin xyz="-0.0 0.0 -0.0" rpy="0.0 0.0 0.0" />
+            <geometry>
+                <mesh filename="orange/textured_coacd_2.stl" scale="1 1 1" />
             </geometry>
         </collision>
         <inertial>

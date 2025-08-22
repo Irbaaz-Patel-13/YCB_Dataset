@@ -1,7 +1,7 @@
 <robot name="tuna_fish_can">
     <link name="base_link">
         <visual>
-            <origin xyz="0.025996325377627645 0.02214035959406331 -0.012989508195911936" rpy="0.0 0.0 0.0" />
+            <origin xyz="0.0 0.0 -0.0" rpy="0.0 0.0 0.0" />
             <geometry>
                 <mesh filename="tuna_fish_can/textured.obj" scale="1 1 1" />
             </geometry>
@@ -10,27 +10,33 @@
             </material>
         </visual>
         <collision>
-            <origin xyz="0.025996325377627645 0.02214035959406331 -0.012989508195911936" rpy="0.0 0.0 0.0" />
+            <origin xyz="0.0 0.0 -0.0" rpy="0.0 0.0 0.0" />
             <geometry>
                 <mesh filename="tuna_fish_can/textured_coacd_0.stl" scale="1 1 1" />
             </geometry>
         </collision>
         <collision>
-            <origin xyz="0.025996325377627645 0.02214035959406331 -0.012989508195911936" rpy="0.0 0.0 0.0" />
+            <origin xyz="0.0 0.0 -0.0" rpy="0.0 0.0 0.0" />
             <geometry>
                 <mesh filename="tuna_fish_can/textured_coacd_1.stl" scale="1 1 1" />
             </geometry>
         </collision>
         <collision>
-            <origin xyz="0.025996325377627645 0.02214035959406331 -0.012989508195911936" rpy="0.0 0.0 0.0" />
+            <origin xyz="0.0 0.0 -0.0" rpy="0.0 0.0 0.0" />
             <geometry>
                 <mesh filename="tuna_fish_can/textured_coacd_2.stl" scale="1 1 1" />
             </geometry>
         </collision>
         <collision>
-            <origin xyz="0.025996325377627645 0.02214035959406331 -0.012989508195911936" rpy="0.0 0.0 0.0" />
+            <origin xyz="0.0 0.0 -0.0" rpy="0.0 0.0 0.0" />
             <geometry>
                 <mesh filename="tuna_fish_can/textured_coacd_3.stl" scale="1 1 1" />
+            </geometry>
+        </collision>
+        <collision>
+            <origin xyz="0.0 0.0 -0.0" rpy="0.0 0.0 0.0" />
+            <geometry>
+                <mesh filename="tuna_fish_can/textured_coacd_4.stl" scale="1 1 1" />
             </geometry>
         </collision>
         <inertial>

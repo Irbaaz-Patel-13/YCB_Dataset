@@ -11,7 +11,7 @@ from object_builder import ObjectBuilder
 root_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 object_folder = root_dir + "/ycb"
 
-max_convex_hull = 4  # for coacd, default -1
+max_convex_hull = 5  # for coacd, default -1
 decimate_face_count = 32  # for decimation, default -1 (no decimation)
 
 builder = ObjectBuilder(
@@ -21,8 +21,15 @@ builder = ObjectBuilder(
     "ycb_mass.json",
 )
 builder.build_library(
+    # Fit object mesh with OBB
+    # Fit yaw only for OBB, not roll/pitch
+    # This assumes the object is modeled upright
+    fit_obb=True,
+    fit_yaw_only=True,
+    # Build URDF and XML
     force_overwrite=True,
     center="mass",  # object center is at mass center
+    # Convex Decomposition
     decompose_concave=True,  # build *_coacd.obj collision mesh
     force_decompose=True,  # overwrite decomposed files
     max_convex_hull=max_convex_hull,

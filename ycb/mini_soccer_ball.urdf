@@ -1,7 +1,7 @@
 <robot name="mini_soccer_ball">
     <link name="base_link">
         <visual>
-            <origin xyz="0.0059125914007175946 -0.011530561800764411 -0.06131555334762107" rpy="0.0 0.0 0.0" />
+            <origin xyz="-0.0 -0.0 0.0" rpy="0.0 0.0 0.0" />
             <geometry>
                 <mesh filename="mini_soccer_ball/textured.obj" scale="1 1 1" />
             </geometry>
@@ -10,7 +10,7 @@
             </material>
         </visual>
         <collision>
-            <origin xyz="0.0059125914007175946 -0.011530561800764411 -0.06131555334762107" rpy="0.0 0.0 0.0" />
+            <origin xyz="-0.0 -0.0 0.0" rpy="0.0 0.0 0.0" />
             <geometry>
                 <mesh filename="mini_soccer_ball/textured_coacd_0.stl" scale="1 1 1" />
             </geometry>

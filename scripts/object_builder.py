@@ -11,6 +11,7 @@ import numpy as np
 import os
 import copy
 import trimesh
+from pathlib import Path
 
 import coacd
 import json
@@ -121,6 +122,134 @@ class ObjectBuilder:
             )
             return {}
 
+    def _rotation_obb_lock_world_z(self, R):
+        z = np.array([0.0, 0.0, 1.0])
+        axes = R  # columns
+
+        # pick the OBB axis with max |dot(axis, z)|
+        dots = axes.T @ z
+        k = int(np.argmax(np.abs(dots)))  # index of axis to become Z
+
+        # permutation so chosen axis is column 2 (Z)
+        order = [0, 1, 2]
+        order.remove(k)
+        order.append(k)
+        P = np.eye(3)[:, order]  # column permutation matrix
+        M = axes @ P  # permuted axes
+
+        # flip Z to be upward
+        if np.dot(M[:, 2], z) < 0:
+            M[:, 2] *= -1.0
+
+        # make right-handed (det > 0); flip the least aligned of X/Y if needed
+        if np.linalg.det(M) < 0:
+            # decide to flip X or Y based on which is less aligned with world axes
+            a = np.abs(M[:, 0] @ z)  # alignment of X to Z (want small)
+            b = np.abs(M[:, 1] @ z)  # alignment of Y to Z
+            if a > b:
+                M[:, 0] *= -1.0
+            else:
+                M[:, 1] *= -1.0
+
+        return M
+
+    def _overwrite_obj_with_transform(
+        self, filename, T_rotate, T_center, rotate_normals_mode="rotate"
+    ):
+        # Compose vertex transform
+        T_total = T_center @ T_rotate
+        R_total = T_total[:3, :3]
+        t_total = T_total[:3, 3]
+
+        # Choose how to rotate normals
+        if rotate_normals_mode == "rotate":
+            Rn = T_rotate[:3, :3]
+        elif rotate_normals_mode == "combined":
+            Rn = R_total
+        elif rotate_normals_mode == "none":
+            Rn = None
+        else:
+            raise ValueError(
+                "rotate_normals_mode must be 'rotate', 'combined', or 'none'"
+            )
+
+        src = Path(filename)
+        lines = src.read_text(encoding="utf-8", errors="ignore").splitlines()
+
+        out = []
+        for line in lines:
+            if line.startswith("v "):  # vertex position
+                # Handle extra spaces/tabs robustly
+                parts = line.split()
+                # Some OBJs can have 3 or 4 (homog. w) values; we use first 3
+                x, y, z = map(float, parts[1:4])
+                v = R_total @ np.array([x, y, z], dtype=float) + t_total
+                out.append(f"v {v[0]:.9f} {v[1]:.9f} {v[2]:.9f}")
+
+            elif line.startswith(
+                "vn "
+            ):  # vertex normal -> rotate only, then renormalize
+                if Rn is None:
+                    out.append(line)
+                else:
+                    parts = line.split()
+                    nx, ny, nz = map(float, parts[1:4])
+                    n = Rn @ np.array([nx, ny, nz], dtype=float)
+                    nn = np.linalg.norm(n)
+                    if nn > 0.0:
+                        n /= nn
+                    out.append(f"vn {n[0]:.9f} {n[1]:.9f} {n[2]:.9f}")
+
+            else:
+                out.append(line)
+
+        src.write_text("\n".join(out), encoding="utf-8")
+
+    # Fit the mesh to an OBB
+    def fit_mesh_to_obb(self, filename, fit_yaw_only=False):
+        # Oriented bounding box
+        mesh = trimesh.load(filename)
+        obb = mesh.bounding_box_oriented
+
+        # Get OBB pose (box local -> mesh frame).
+        # In trimesh this lives on the primitive.
+        if not hasattr(obb, "primitive") or obb.primitive is None:
+            # Fallback: rebuild a Box primitive from the oriented box mesh
+            # (rare; usually .primitive exists)
+            obb = trimesh.bounds.oriented_bounds(mesh)
+            T_obb, extents = obb  # returns (transform, extents)
+        else:
+            T_obb = obb.primitive.transform
+            extents = obb.primitive.extents
+
+        # Build rotation that aligns OBB to world axes:
+        #    T_obb maps box-local -> mesh;
+        #    its rotation columns are OBB axes in mesh frame.
+        #    To align mesh with OBB, rotate mesh by R^T.
+        R = T_obb[:3, :3]
+        if fit_yaw_only:
+            R = self._rotation_obb_lock_world_z(R)
+        T_rotate = np.eye(4)
+        T_rotate[:3, :3] = R.T
+
+        mesh_aligned = mesh.copy()
+        mesh_aligned.apply_transform(T_rotate)
+
+        # Recentering: move center of mass to the origin
+        try:
+            cm = mesh_aligned.center_mass
+        except Exception:
+            cm = mesh_aligned.centroid
+        T_center = np.eye(4)
+        T_center[:3, 3] = -cm
+        mesh_aligned.apply_transform(T_center)
+
+        # Special process for .obj files
+        if filename.endswith(".obj"):
+            self._overwrite_obj_with_transform(filename, T_rotate, T_center)
+        else:
+            mesh_aligned.export(filename)
+
     # Find the center of mass of the object
     def get_center_of_mass(self, filename):
         mesh = trimesh.load(filename)
@@ -218,7 +347,7 @@ class ObjectBuilder:
 
         # Output the center of mass if provided
         if mass_center is not None:
-            # Check if there's a geometry offset
+            # Check if there's a geometry offset (not really present)
             offset_ob = new_urdf.find(".//collision/origin")
             if offset_ob is not None:
                 offset_str = offset_ob.attrib.get("xyz", "0 0 0")
@@ -229,7 +358,7 @@ class ObjectBuilder:
                 offset = [0, 0, 0]
                 rpy = [0, 0, 0]
 
-            # Check if there's a scale factor and apply it
+            # Check if there's a scale factor and apply it (not really present)
             scale_ob = new_urdf.find(".//collision/geometry/mesh")
             if scale_ob is not None:
                 scale_str = scale_ob.attrib.get("scale", "1 1 1")
@@ -245,6 +374,7 @@ class ObjectBuilder:
             mass_center = np.matmul(
                 rot_matrix, np.vstack(np.asarray(mass_center))
             ).squeeze()
+            mass_center = np.round(mass_center, 8)
 
             self.replace_urdf_attributes(
                 new_urdf,
@@ -359,6 +489,7 @@ class ObjectBuilder:
 
         # Update position if mass center is provided
         if mass_center is not None:
+            mass_center = np.round(mass_center, 8)
             mass_center_str = (
                 f"{mass_center[0]} {mass_center[1]} {mass_center[2]}"
             )
@@ -399,6 +530,8 @@ class ObjectBuilder:
         self,
         filename,
         output_folder=None,
+        fit_obb=False,
+        fit_yaw_only=False,
         force_overwrite=False,
         decompose_concave=False,
         force_decompose=False,
@@ -420,6 +553,10 @@ class ObjectBuilder:
         name = rel.split(os.path.sep)[0]
         rel = rel.replace(os.path.sep, "/")
         file_name_raw, file_extension = os.path.splitext(filename)
+
+        # If fit the mesh with OBB, do it
+        if fit_obb:
+            self.fit_mesh_to_obb(filename, fit_yaw_only)
 
         # Get mass data
         mass_value = self.mass_data.get(name, None)

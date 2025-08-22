@@ -1,7 +1,7 @@
 <robot name="baseball">
     <link name="base_link">
         <visual>
-            <origin xyz="0.009947985025210358 0.04811623557140466 -0.03592664752018525" rpy="0.0 0.0 0.0" />
+            <origin xyz="-0.0 0.0 0.0" rpy="0.0 0.0 0.0" />
             <geometry>
                 <mesh filename="baseball/textured.obj" scale="1 1 1" />
             </geometry>
@@ -10,7 +10,7 @@
             </material>
         </visual>
         <collision>
-            <origin xyz="0.009947985025210358 0.04811623557140466 -0.03592664752018525" rpy="0.0 0.0 0.0" />
+            <origin xyz="-0.0 0.0 0.0" rpy="0.0 0.0 0.0" />
             <geometry>
                 <mesh filename="baseball/textured_coacd_0.stl" scale="1 1 1" />
             </geometry>

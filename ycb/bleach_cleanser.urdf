@@ -1,7 +1,7 @@
 <robot name="bleach_cleanser">
     <link name="base_link">
         <visual>
-            <origin xyz="0.017138949272641098 -0.011574369859748879 -0.09969796254743377" rpy="0.0 0.0 0.0" />
+            <origin xyz="-0.0 -0.0 -0.0" rpy="0.0 0.0 0.0" />
             <geometry>
                 <mesh filename="bleach_cleanser/textured.obj" scale="1 1 1" />
             </geometry>
@@ -10,21 +10,27 @@
             </material>
         </visual>
         <collision>
-            <origin xyz="0.017138949272641098 -0.011574369859748879 -0.09969796254743377" rpy="0.0 0.0 0.0" />
+            <origin xyz="-0.0 -0.0 -0.0" rpy="0.0 0.0 0.0" />
             <geometry>
                 <mesh filename="bleach_cleanser/textured_coacd_0.stl" scale="1 1 1" />
             </geometry>
         </collision>
         <collision>
-            <origin xyz="0.017138949272641098 -0.011574369859748879 -0.09969796254743377" rpy="0.0 0.0 0.0" />
+            <origin xyz="-0.0 -0.0 -0.0" rpy="0.0 0.0 0.0" />
             <geometry>
                 <mesh filename="bleach_cleanser/textured_coacd_1.stl" scale="1 1 1" />
             </geometry>
         </collision>
         <collision>
-            <origin xyz="0.017138949272641098 -0.011574369859748879 -0.09969796254743377" rpy="0.0 0.0 0.0" />
+            <origin xyz="-0.0 -0.0 -0.0" rpy="0.0 0.0 0.0" />
             <geometry>
                 <mesh filename="bleach_cleanser/textured_coacd_2.stl" scale="1 1 1" />
+            </geometry>
+        </collision>
+        <collision>
+            <origin xyz="-0.0 -0.0 -0.0" rpy="0.0 0.0 0.0" />
+            <geometry>
+                <mesh filename="bleach_cleanser/textured_coacd_3.stl" scale="1 1 1" />
             </geometry>
         </collision>
         <inertial>
